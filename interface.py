@@ -35,10 +35,10 @@ for i in [1,2,3]:
         column_name1 = f"{i}ème pass"
         column_name = 'pourcentage' + f"{i}ème pass"
         
-temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
-temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
-temp_df = pd.concat([temp_df, temp_df1], axis=1)
-result_df = pd.concat([result_df, temp_df], axis=1)
+    temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
+    temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
+    temp_df = pd.concat([temp_df, temp_df1], axis=1)
+    result_df = pd.concat([result_df, temp_df], axis=1)
 bar_chart = px.bar(result_df, title='Pass Distribution (number)', x=['1st pass ','2nd pass','3rd pass'], y=[result_df.loc[0][0],result_df.loc[0][2],result_df.loc[0][4]])
 bar_chart.update_layout(
     xaxis_title='Pass Number',  # Nom de l'axe des abscisses
