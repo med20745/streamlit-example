@@ -83,8 +83,7 @@ def graph(x):
             st.plotly_chart(pie_char)
     return 0
 
-def intervalle_date():#donner intervalle de date min et max 
-    df = pd.read_excel('a.xlsx')
+def intervalle_date(df):#donner intervalle de date min et max 
     conn=sqlite3.connect(':memory:')
     df.to_sql('a', conn, if_exists='replace')
     cursor = conn.cursor()
@@ -128,6 +127,9 @@ def datem (date):
 #programme principale 
 
 if excel_file is not  None:
+    df = pd.read_excel(excel_file)
+    
+    
     options = ['Generale ', 'Intervalle de jour ', 'jour']
     selected_options = st.radio('Choisissez la méthode d étude', options)
     
@@ -135,7 +137,7 @@ if excel_file is not  None:
         df = pd.read_excel(excel_file)
         
     elif selected_options==options[1]:
-        intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date()[0][0],intervalle_date ()[1][0]], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
+        intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date(df)[0][0],intervalle_date (df)[1][0]], min_value=intervalle_date(df)[0][0],max_value=intervalle_date(df)[1][0])
         df=datem(intervalle)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=intervalle_date()[0][0], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
