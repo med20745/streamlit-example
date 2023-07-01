@@ -20,31 +20,6 @@ else:
     df=None
     nombre_ligne = 1
 
-st.write('Linses Classification by Passes')
-result_df=pd.DataFrame()
-for i in [1,2,3]:
-    query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
-    cursor.execute(query)
-    resultat=cursor.fetchall()
-
-    column_name1 = f"{i}er pass"
-    column_name='pourcentage'+f"{i}er pass"
-    
-    temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
-    temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
-    temp_df = pd.concat([temp_df, temp_df1], axis=1)
-    result_df = pd.concat([result_df, temp_df], axis=1)
-bar_chart = px.bar(result_df, title='Pass Distribution (number)', x=['1st pass ','2nd pass','3rd pass'], y=[result_df.loc[0][0],result_df.loc[0][2],result_df.loc[0][4]])
-bar_chart.update_layout(
-    xaxis_title='Pass Number',  # Nom de l'axe des abscisses
-    yaxis_title='Quantity'
-)
-pie_char=px.pie(result_df,title='Distribution of  Total Quantity',values=[result_df.loc[0][1],result_df.loc[0][3],result_df.loc[0][5]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
-st.plotly_chart(bar_chart)
-st.plotly_chart(pie_char)
-    
-result_df=pd.DataFrame()#empty data frame
-
 def nom(x):#LIBINDFAM nom des indices 
     query1=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
     cursor.execute(query1)
@@ -122,29 +97,54 @@ def graph(x):
     return 0
         
 #programme principale 
-with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
-    # Write 'result_df' to 'indice pass' sheet
-    concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
-
-    # Write 'result_df1' to 'indice pourcentage' sheet
-    concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+if excel_file is not  None:
+    st.write('Linses Classification by Passes')
+    result_df=pd.DataFrame()
+    for i in [1,2,3]:
+        query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
+        cursor.execute(query)
+        resultat=cursor.fetchall()
     
-    concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
-    concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+        column_name1 = f"{i}er pass"
+        column_name='pourcentage'+f"{i}er pass"
+        
+        temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
+        temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
+        temp_df = pd.concat([temp_df, temp_df1], axis=1)
+        result_df = pd.concat([result_df, temp_df], axis=1)
+    bar_chart = px.bar(result_df, title='Pass Distribution (number)', x=['1st pass ','2nd pass','3rd pass'], y=[result_df.loc[0][0],result_df.loc[0][2],result_df.loc[0][4]])
+    bar_chart.update_layout(
+        xaxis_title='Pass Number',  # Nom de l'axe des abscisses
+        yaxis_title='Quantity'
+    )
+    pie_char=px.pie(result_df,title='Distribution of  Total Quantity',values=[result_df.loc[0][1],result_df.loc[0][3],result_df.loc[0][5]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
+    st.plotly_chart(bar_chart)
+    st.plotly_chart(pie_char)
+        
+    result_df=pd.DataFrame()#empty data frame
+    with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
+        # Write 'result_df' to 'indice pass' sheet
+        concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
     
-    concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
-    concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
+        # Write 'result_df1' to 'indice pourcentage' sheet
+        concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+        
+        concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
+        concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+        
+        concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
+        concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
+        
+    #creation d un bouton pour selectionner un choix 
+    options = ['indice', 'ordre', 'type']
+    selected_options = st.multiselect('Choisissez le paramètre à étudier', options)
+    excel_file1='result.xlsx'
     
-#creation d un bouton pour selectionner un choix 
-options = ['indice', 'ordre', 'type']
-selected_options = st.multiselect('Choisissez le paramètre à étudier', options)
-excel_file1='result.xlsx'
-
-
-
     
-
-
-
-graph(selected_options)
+    
+        
+    
+    
+    
+    graph(selected_options)
 
