@@ -84,11 +84,9 @@ def graph(x):
         
 #programme principale 
 if excel_file is not  None:
-     df = pd.read_excel(excel_file)
-
+    df = pd.read_excel(excel_file)
     # Connexion à la base de données SQLite en mémoire
     conn = sqlite3.connect(':memory:')
-
     # Enregistrement du DataFrame dans la table 'a' de la base de données
     df.to_sql('a', conn, if_exists='replace')
     cursor = conn.cursor()
