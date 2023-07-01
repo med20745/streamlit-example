@@ -5,20 +5,6 @@ import sqlite3
 st.set_page_config(page_title='RESYS Dashboard')#titre du page 
 st.title('RESYS Dashboard')#titre taille 1
 excel_file = st.file_uploader("Importez un fichier Excel", type=["xlsx"])
-if excel_file is not  None:
-    df = pd.read_excel(excel_file)
-
-    # Connexion à la base de données SQLite en mémoire
-    conn = sqlite3.connect(':memory:')
-
-    # Enregistrement du DataFrame dans la table 'a' de la base de données
-    df.to_sql('a', conn, if_exists='replace')
-    cursor = conn.cursor()
-    nombre_ligne = len(df)
-else:
-    cursor=None
-    df=None
-    nombre_ligne = 1
 
 def nom(x):#LIBINDFAM nom des indices 
     query1=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
