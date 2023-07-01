@@ -98,6 +98,15 @@ def graph(x):
         
 #programme principale 
 if excel_file is not  None:
+     df = pd.read_excel(excel_file)
+
+    # Connexion à la base de données SQLite en mémoire
+    conn = sqlite3.connect(':memory:')
+
+    # Enregistrement du DataFrame dans la table 'a' de la base de données
+    df.to_sql('a', conn, if_exists='replace')
+    cursor = conn.cursor()
+    nombre_ligne = len(df)
     st.write('Linses Classification by Passes')
     result_df=pd.DataFrame()
     for i in [1,2,3]:
