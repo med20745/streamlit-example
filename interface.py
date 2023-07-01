@@ -26,15 +26,10 @@ for i in [1,2,3]:
     query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
     cursor.execute(query)
     resultat=cursor.fetchall()
-    
-    if i==1:
+
         column_name1 = f"{i}er pass"
         column_name='pourcentage'+f"{i}er pass"
-        
-    else:
-        column_name1 = f"{i}ème pass"
-        column_name = 'pourcentage' + f"{i}ème pass"
-        
+    
     temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
     temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
     temp_df = pd.concat([temp_df, temp_df1], axis=1)
