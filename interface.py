@@ -102,47 +102,6 @@ def concat_nombre(a):
 def concat_pourcentage(a) :      
     result_df1 = pd.concat([nom(a)[0],nombre_pass(a)[1]], axis=1)#tableau indice pourcentage 
     return result_df1
-    
-def generale ():
-    if cursor is not None:
-        result_df=pd.DataFrame()
-        for i in [1,2,3]:
-            query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
-            cursor.execute(query)
-            resultat=cursor.fetchall()
-            
-            if i==1:
-                column_name1 = f"{i}er pass"
-                column_name='pourcentage'+f"{i}er pass"
-                
-            else:
-                column_name1 = f"{i}ème pass"
-                column_name = 'pourcentage' + f"{i}ème pass"
-                
-            temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
-            temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
-            temp_df = pd.concat([temp_df, temp_df1], axis=1)
-            result_df = pd.concat([result_df, temp_df], axis=1)
-    return result_df
-        
-#programme principale 
-with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
-    # Write 'result_df' to 'indice pass' sheet
-    concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
-
-    # Write 'result_df1' to 'indice pourcentage' sheet
-    concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
-    
-    concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
-    concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
-    
-    concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
-    concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-    
-#creation d un bouton pour selectionner un choix 
-options = ['indice', 'ordre', 'type']
-selected_options = st.multiselect('Choisissez le paramètre à étudier', options)
-excel_file1='result.xlsx'
 
 
 def graph(x):
@@ -166,6 +125,28 @@ def graph(x):
             pie_char=px.pie(df,title='Distribution of '+str(ligne[0]),values=[ligne[1],ligne[2],ligne[3]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
             st.plotly_chart(pie_char)
     return 0
+        
+#programme principale 
+with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
+    # Write 'result_df' to 'indice pass' sheet
+    concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
+
+    # Write 'result_df1' to 'indice pourcentage' sheet
+    concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+    
+    concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
+    concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+    
+    concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
+    concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
+    
+#creation d un bouton pour selectionner un choix 
+options = ['indice', 'ordre', 'type']
+selected_options = st.multiselect('Choisissez le paramètre à étudier', options)
+excel_file1='result.xlsx'
+
+
+
     
 
 
