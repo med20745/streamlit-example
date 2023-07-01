@@ -27,8 +27,8 @@ for i in [1,2,3]:
     cursor.execute(query)
     resultat=cursor.fetchall()
 
-        column_name1 = f"{i}er pass"
-        column_name='pourcentage'+f"{i}er pass"
+    column_name1 = f"{i}er pass"
+    column_name='pourcentage'+f"{i}er pass"
     
     temp_df = pd.DataFrame(resultat, columns=[column_name1])  # temporary data frame
     temp_df1 = pd.DataFrame([[resultat[0][0] / nombre_ligne * 100]], columns=[column_name])#data frame pourcentage
