@@ -143,6 +143,7 @@ if excel_file is not  None:
         df=datem(intervalle)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=intervalle_date()[0][0], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
+        jour=date(*jour)
         df=datem(jour)
 
 
