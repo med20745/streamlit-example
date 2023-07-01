@@ -82,10 +82,64 @@ def graph(x):
             pie_char=px.pie(df,title='Distribution of '+str(ligne[0]),values=[ligne[1],ligne[2],ligne[3]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
             st.plotly_chart(pie_char)
     return 0
+
+def intervalle_date():#donner intervalle de date min et max 
+    df = pd.read_excel('a.xlsx')
+    conn=sqlite3.connect(':memory:')
+    df.to_sql('a', conn, if_exists='replace')
+    cursor = conn.cursor()
+    query=f'SELECT MIN(AAAA) , MIN(MM) , MIN(DD) FROM a '
+    cursor.execute(query)
+    x=cursor.fetchall()
+    x[0]=date(*x[0])#x ou y sont des listes de tuples 
+    query=f'SELECT MAX(AAAA) , MAX(MM) , MAX(DD) FROM a '
+    cursor.execute(query)
+    y=cursor.fetchall()
+    y[0]=date(*y[0])#x et y doivent etre liste de date 
+    return [x,y]
+
+def datem (date):
+    df = pd.read_excel('a.xlsx')
+    conn=sqlite3.connect(':memory:')
+    df.to_sql('a', conn, if_exists='replace')#l input est une liste de 2 liste de type date on doit taper x[0](1er date [0]1er element qui est le seule element)
+    cursor = conn.cursor()
+    if isinstance(date, list):#verifier si date est une liste
+        A=date[0][0].year
+        M=date[0][0].month
+        D=date[0][0].day
+        A1=date[1][0].year
+        M1=date[1][0].month
+        D1=date[1][0].day
+        query=f'SELECT* FROM a WHERE (AAAA BETWEEN {A} AND {A1} ) AND ( MM BETWEEN {M} AND {M1} ) AND ( DD BETWEEN {D} AND {D1})' 
+        cursor.execute(query)
+        resultat=cursor.fetchall()
+        df=pd.DataFrame(resultat)
+    else:
+        A=date.year
+        M=date.month
+        D=date.day
+        query=f'SELECT* FROM a WHERE (AAAA ={A} ) AND ( MM = {M} ) AND ( DD = {D}  )' 
+
+    return df
         
 #programme principale 
+
 if excel_file is not  None:
-    df = pd.read_excel(excel_file)
+    options = ['Generale ', 'Intervalle de jour ', 'jour']
+    selected_options = st.radio('Choisissez la méthode d étude', options)
+    
+    if selected_options==options[0]:
+        df = pd.read_excel(excel_file)
+        
+    elif selected_options==options[1]:
+        intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date()[0][0],intervalle_date ()[1][0]], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
+        df=datem(intervalle)
+    elif selected_options==options[2]:
+        jour= st.date_input('selectionnez une date :',value=intervalle_date()[0][0], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
+        datem(jour)
+
+
+
     # Connexion à la base de données SQLite en mémoire
     conn = sqlite3.connect(':memory:')
     # Enregistrement du DataFrame dans la table 'a' de la base de données
