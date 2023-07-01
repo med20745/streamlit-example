@@ -62,7 +62,7 @@ def concat_pourcentage(a) :
 
 def graph(x):
     for i in x:
-        st.write('classification by '+i)
+        st.header('classification by '+i)
         #pie char
         df=pd.read_excel(excel_file1,sheet_name=i+'1',usecols='A,F')#selection des donnés pourcentage de chaque partie de x
         a=df.columns.tolist()
