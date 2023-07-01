@@ -136,7 +136,7 @@ if excel_file is not  None:
     selected_options = st.radio('Choisissez la méthode d étude', options)
     
     if selected_options==options[0]:
-        continue
+         df = pd.read_excel(excel_file)
         
     elif selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date(df)[0][0],intervalle_date (df)[1][0]], min_value=intervalle_date(df)[0][0],max_value=intervalle_date(df)[1][0])
