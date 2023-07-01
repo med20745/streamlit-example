@@ -100,10 +100,6 @@ def intervalle_date(df):#donner intervalle de date min et max
     return [x,y]
 
 def datem (date):
-    df = pd.read_excel('a.xlsx')
-    conn=sqlite3.connect(':memory:')
-    df.to_sql('a', conn, if_exists='replace')#l input est une liste de 2 liste de type date on doit taper x[0](1er date [0]1er element qui est le seule element)
-    cursor = conn.cursor()
     if isinstance(date, list):#verifier si date est une liste
         A=date[0][0].year
         M=date[0][0].month
@@ -130,13 +126,17 @@ def datem (date):
 
 if excel_file is not  None:
     df = pd.read_excel(excel_file)
+    conn = sqlite3.connect(':memory:')
+    # Enregistrement du DataFrame dans la table 'a' de la base de données
+    df.to_sql('a', conn, if_exists='replace')
+    cursor = conn.cursor()
     
     
     options = ['Generale ', 'Intervalle de jour ', 'jour']
     selected_options = st.radio('Choisissez la méthode d étude', options)
     
     if selected_options==options[0]:
-        df = pd.read_excel(excel_file)
+        continue
         
     elif selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date(df)[0][0],intervalle_date (df)[1][0]], min_value=intervalle_date(df)[0][0],max_value=intervalle_date(df)[1][0])
