@@ -88,7 +88,7 @@ def datem (date,df):
     conn=sqlite3.connect(':memory:')
     df.to_sql('a', conn, if_exists='replace')#l input est un tuple de taille 2 ou taille 1
     cursor = conn.cursor()
-    if isinstance(date,tuple )::#verifier si date est une liste
+    if isinstance(date,tuple ):#verifier si date est une liste
         A=date[0].year
         M=date[0].month
         D=date[0].day
