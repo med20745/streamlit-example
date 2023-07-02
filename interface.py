@@ -84,7 +84,7 @@ def graph(x):
             pie_char=px.pie(df,title='Distribution of '+str(ligne[0]),values=[ligne[1],ligne[2],ligne[3]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
             st.plotly_chart(pie_char)
     return 0
-def datem (date):
+def datem (date,df):
     conn=sqlite3.connect(':memory:')
     df.to_sql('a', conn, if_exists='replace')#l input est un tuple de taille 2 ou taille 1
     cursor = conn.cursor()
@@ -164,7 +164,7 @@ if excel_file is not  None:
         st.plotly_chart(pie_char)
     elif selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
-        df=datem(intervalle)
+        df=datem(intervalle,df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
@@ -172,7 +172,7 @@ if excel_file is not  None:
         nombre_ligne = len(df)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
-        df=datem(jour)
+        df=datem(jour,df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
