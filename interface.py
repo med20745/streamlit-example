@@ -99,56 +99,12 @@ def intervalle_date(df):#donner intervalle de date min et max
     y[0]=date(*y[0])#x et y doivent etre liste de date 
     return [x,y]
 
-def datem (date):
-    if isinstance(date, list):#verifier si date est une liste
-        A=date[0][0].year
-        M=date[0][0].month
-        D=date[0][0].day
-        A1=date[1][0].year
-        M1=date[1][0].month
-        D1=date[1][0].day
-        query=f'SELECT* FROM a WHERE (AAAA BETWEEN {A} AND {A1} ) AND ( MM BETWEEN {M} AND {M1} ) AND ( DD BETWEEN {D} AND {D1})' 
-        cursor.execute(query)
-        resultat=cursor.fetchall()
-        df=pd.DataFrame(resultat)
-    else:
-        A=date.year
-        M=date.month
-        D=date.day
-        query=f'SELECT* FROM a WHERE (AAAA ={A} ) AND ( MM = {M} ) AND ( DD = {D}  )' 
-        cursor.execute(query)
-        resultat=cursor.fetchall()
-        df=pd.DataFrame(resultat)
 
-    return df
         
 #programme principale 
 
 if excel_file is not  None:
     df = pd.read_excel(excel_file)
-    conn = sqlite3.connect(':memory:')
-    # Enregistrement du DataFrame dans la table 'a' de la base de données
-    df.to_sql('a', conn, if_exists='replace')
-    cursor = conn.cursor()
-    
-    
-    options = ['Generale ', 'Intervalle de jour ', 'jour']
-    selected_options = st.radio('Choisissez la méthode d étude', options)
-    
-    if selected_options==options[0]:
-         df = pd.read_excel(excel_file)
-        
-    elif selected_options==options[1]:
-        intervalle = st.date_input('selectionnez l intervalle de date :',[intervalle_date(df)[0][0],intervalle_date (df)[1][0]], min_value=intervalle_date(df)[0][0],max_value=intervalle_date(df)[1][0])
-        df=datem(intervalle)
-    elif selected_options==options[2]:
-        jour= st.date_input('selectionnez une date :',value=intervalle_date()[0][0], min_value=intervalle_date()[0][0],max_value=intervalle_date()[1][0])
-        jour=date(*jour)
-        df=datem(jour)
-
-
-
-    # Connexion à la base de données SQLite en mémoire
     conn = sqlite3.connect(':memory:')
     # Enregistrement du DataFrame dans la table 'a' de la base de données
     df.to_sql('a', conn, if_exists='replace')
@@ -190,10 +146,6 @@ if excel_file is not  None:
         
         concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
         concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-        
-    #creation d un bouton pour selectionner un choix 
-    options = ['indice', 'ordre', 'type']
-    selected_options = st.multiselect('Choisissez le paramètre à étudier', options)
     excel_file1='result.xlsx'
     
     
