@@ -195,7 +195,7 @@ if excel_file is not  None:
         
         concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
         concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-        writer.close() 
+        
     excel_file1='result.xlsx'
     options1 = ['indice', 'ordre', 'type']
     selected_options1 = st.multiselect('Choisissez le paramètre à étudier', options1)
