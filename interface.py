@@ -182,7 +182,6 @@ if excel_file is not  None:
         nombre_ligne = len(df)
         
         
-    result_df=pd.DataFrame()#empty data frame
     with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
         # Write 'result_df' to 'indice pass' sheet
         concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
