@@ -3,7 +3,6 @@ import streamlit as st
 import plotly_express as px
 import sqlite3
 from datetime import date
-import openpyxl
 
 st.set_page_config(page_title='RESYS Dashboard')#titre du page 
 st.title('RESYS Dashboard')#titre taille 1
@@ -181,22 +180,6 @@ if excel_file is not  None:
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
         nombre_ligne = len(df)
-   
-    workbook = openpyxl.load_workbook('result.xlsx')
-    sheet_names = workbook.sheetnames
-
-    if len(sheet_names) == 0:
-    # No sheets in the workbook, create a new one
-        workbook.create_sheet(title='Sheet 1')
-    elif len(sheet_names) == 1:
-    # Only one sheet, create a new one and hide the first sheet
-        workbook.create_sheet(title='Sheet 2')
-        workbook[sheet_names[0]].sheet_state = 'hidden'
-
-
-    workbook.save('result.xlsx')
-
-        
         
     with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
         # Write 'result_df' to 'indice pass' sheet
