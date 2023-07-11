@@ -105,6 +105,7 @@ def datem (date,df):
         M=date.month
         D=date.day
         query=f'SELECT* FROM a WHERE (AAAA ={A} ) AND ( MM = {M} ) AND ( DD = {D}  )' 
+        cursor.execute(query)
         resultat=cursor.fetchall()
         df=pd.DataFrame(resultat)
     return df
