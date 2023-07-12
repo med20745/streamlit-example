@@ -176,6 +176,7 @@ if excel_file is not  None:
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
         df=datem(jour,df)
+        st.write(df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
