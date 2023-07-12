@@ -47,7 +47,7 @@ def nombre_pass(x):
 
         return result_df, temp_df7
 
-def concat_nombre(a):
+def concat_nombre(a):#nom/nombre de pass/nombre parmi total/pourcentage par rapport totale
     x=nom(a)[0]
     y=nombre_pass(a)[0]
     z=nombre(a)[0]
@@ -167,6 +167,7 @@ if excel_file is not  None:
     elif selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
         df=datem(intervalle,df)
+        st.write(df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
