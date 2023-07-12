@@ -167,17 +167,14 @@ if excel_file is not  None:
     elif selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
         df=datem(intervalle,df)
-        st.write(df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
         nombre_ligne = len(df)
-        st.write(nombre_ligne)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
         df=datem(jour,df)
-        st.write(df)
         conn = sqlite3.connect(':memory:')
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
@@ -196,7 +193,9 @@ with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
         
     concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
     concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-        
+    writer.book.set_sheet_visibility(writer.sheets['indice1'].sheet_name, 'visible')
+
+
 excel_file1='result.xlsx'
 options1 = ['indice', 'ordre', 'type']
 selected_options1 = st.multiselect('Choisissez le paramètre à étudier', options1)
