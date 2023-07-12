@@ -3,6 +3,7 @@ import streamlit as st
 import plotly_express as px
 import sqlite3
 from datetime import date
+from openpyxl import load_workbook
 
 st.set_page_config(page_title='RESYS Dashboard')#titre du page 
 st.title('RESYS Dashboard')#titre taille 1
@@ -84,30 +85,36 @@ def graph(x):
             pie_char=px.pie(df,title='Distribution of '+str(ligne[0]),values=[ligne[1],ligne[2],ligne[3]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
             st.plotly_chart(pie_char)
     return 0
-def datem (date,df):
-    conn=sqlite3.connect(':memory:')
-    df.to_sql('a', conn, if_exists='replace')#l input est un tuple de taille 2 ou taille 1
+def datem(date, df):
+    conn = sqlite3.connect(':memory:')
+    df.to_sql('a', conn, if_exists='replace')
+    column=df.columns.tolist()
+    print(df)
     cursor = conn.cursor()
-    if isinstance(date,tuple ):#verifier si date est une liste
-        A=date[0].year
-        M=date[0].month
-        D=date[0].day
-        A1=date[1].year
-        M1=date[1].month
-        D1=date[1].day
-        query=f'SELECT* FROM a WHERE (AAAA BETWEEN {A} AND {A1} ) AND ( MM BETWEEN {M} AND {M1} ) AND ( DD BETWEEN {D} AND {D1})' 
+    if isinstance(date, tuple):
+        A = date[0].year
+        M = date[0].month
+        D = date[0].day
+        A1 = date[1].year
+        M1 = date[1].month
+        D1 = date[1].day
+        query = f'SELECT * FROM a WHERE (AAAA BETWEEN {A} AND {A1} ) AND (MM BETWEEN {M} AND {M1} ) AND (DD BETWEEN {D} AND {D1})'
         cursor.execute(query)
-        resultat=cursor.fetchall()
-        df=pd.DataFrame(resultat)
-        print(df)
+        resultat = cursor.fetchall()
+        df = pd.DataFrame(resultat)
+        df = df.iloc[:, 1:]
+        df.columns=column
     else:
-        A=date.year
-        M=date.month
-        D=date.day
-        query=f'SELECT* FROM a WHERE (AAAA ={A} ) AND ( MM = {M} ) AND ( DD = {D}  )' 
+        A = date.year
+        M = date.month
+        D = date.day
+        query = f'SELECT * FROM a WHERE (AAAA = {A} ) AND (MM = {M} ) AND (DD = {D} )'
         cursor.execute(query)
-        resultat=cursor.fetchall()
-        df=pd.DataFrame(resultat)
+        resultat = cursor.fetchall()
+        df = pd.DataFrame(resultat)
+        df = df.iloc[:, 1:]
+        df.columns=column
+    conn.close()
     return df
 
 def intervalle_date(df):#donner intervalle de date min et max 
@@ -123,8 +130,6 @@ def intervalle_date(df):#donner intervalle de date min et max
     y=cursor.fetchall()
     y[0]=date(*y[0])#x et y doivent etre liste de date 
     return [x,y]
-
-
 
         
 #programme principale 
@@ -142,6 +147,7 @@ if excel_file is not  None:
     if selected_options==options[0]:
         nombre_ligne = len(df)
         st.write('Linses Classification by Passes')
+        print(df)
         result_df=pd.DataFrame()
         for i in [1,2,3]:
             query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
@@ -164,7 +170,7 @@ if excel_file is not  None:
         st.plotly_chart(bar_chart)
         st.plotly_chart(pie_char)
 
-    elif selected_options==options[1]:
+    if selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
         df=datem(intervalle,df)
         conn = sqlite3.connect(':memory:')
@@ -181,28 +187,24 @@ if excel_file is not  None:
         cursor = conn.cursor()
         nombre_ligne = len(df)
         
-with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
-        # Write 'result_df' to 'indice pass' sheet
-    concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
-    
-        # Write 'result_df1' to 'indice pourcentage' sheet
-    concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+    with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
+            # Write 'result_df' to 'indice pass' sheet
+        concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
         
-    concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
-    concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+            # Write 'result_df1' to 'indice pourcentage' sheet
+        concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+            
+        concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
+        concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+            
+        concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
+        concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
         
-    concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
-    concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-
 
 excel_file1='result.xlsx'
 options1 = ['indice', 'ordre', 'type']
 selected_options1 = st.multiselect('Choisissez le paramètre à étudier', options1)
-    
-    
         
-    
-    
     
 graph(selected_options1)
 
