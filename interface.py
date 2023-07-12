@@ -193,7 +193,6 @@ with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
         
     concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
     concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
-    writer.book.set_sheet_visibility(writer.sheets['indice1'].sheet_name, 'visible')
 
 
 excel_file1='result.xlsx'
