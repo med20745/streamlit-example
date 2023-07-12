@@ -181,27 +181,27 @@ if excel_file is not  None:
         cursor = conn.cursor()
         nombre_ligne = len(df)
         
-    with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
+with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
         # Write 'result_df' to 'indice pass' sheet
-        concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
+    concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
     
         # Write 'result_df1' to 'indice pourcentage' sheet
-        concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
+    concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
         
-        concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
-        concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
+    concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
+    concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
         
-        concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
-        concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
+    concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
+    concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
         
-    excel_file1='result.xlsx'
-    options1 = ['indice', 'ordre', 'type']
-    selected_options1 = st.multiselect('Choisissez le paramètre à étudier', options1)
+excel_file1='result.xlsx'
+options1 = ['indice', 'ordre', 'type']
+selected_options1 = st.multiselect('Choisissez le paramètre à étudier', options1)
     
     
         
     
     
     
-    graph(selected_options1)
+graph(selected_options1)
 
