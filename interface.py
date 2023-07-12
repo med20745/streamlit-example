@@ -173,6 +173,7 @@ if excel_file is not  None:
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
         nombre_ligne = len(df)
+        st.write(nombre_ligne)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
         df=datem(jour,df)
