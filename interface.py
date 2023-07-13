@@ -177,7 +177,7 @@ if excel_file is not  None:
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
-        nombre_ligne = len(df)
+        generale(df)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
         df=datem(jour,df)
@@ -185,7 +185,7 @@ if excel_file is not  None:
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
-        nombre_ligne = len(df)
+        generale(df)
         
     with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
             # Write 'result_df' to 'indice pass' sheet
