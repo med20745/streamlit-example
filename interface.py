@@ -154,7 +154,7 @@ def generale(df):
         pie_char=px.pie(result_df,title='Distribution of  Total Quantity',values=[result_df.loc[0][1],result_df.loc[0][3],result_df.loc[0][5]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
         st.plotly_chart(bar_chart)
         st.plotly_chart(pie_char)
-    return 0
+        return 0
 #programme principale 
 
 if excel_file is not  None:
