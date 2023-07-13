@@ -10,8 +10,8 @@ st.title('RESYS Dashboard')#titre taille 1
 excel_file = st.file_uploader("Importez un fichier Excel", type=["xlsx"])
 
 def nom(x):#LIBINDFAM nom des indices 
-    query=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
-    cursor.execute(query)
+    query1=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
+    cursor.execute(query1)
     resultat=cursor.fetchall()
     temp_df= pd.DataFrame(resultat, columns=[x])
     return (temp_df,resultat)
@@ -32,21 +32,21 @@ def pourcentage_total(resultat): #f(nombre(,)[1])%total
 
 def nombre_pass(x):
         result_df = pd.DataFrame()
-        temp_df1 = pd.DataFrame()
+        temp_df7 = pd.DataFrame()
 
         for i in [1, 2, 3]:#nombre de linces de chaque pass 
             query = f"SELECT COUNT(b.{x})FROM(SELECT distinct {x} FROM a) AS c LEFT JOIN a AS b ON b.{x}=c.{x} AND b.QTE={i} GROUP BY c.{x} ORDER BY c.{x} "
             cursor.execute(query)
             resultat3 = cursor.fetchall()
-            temp_df2 = pd.DataFrame(resultat3, columns=[f" {i} pass"])
-            result_df = pd.concat([result_df, temp_df2], axis=1)
+            temp_df5 = pd.DataFrame(resultat3, columns=[f" {i} pass"])
+            result_df = pd.concat([result_df, temp_df5], axis=1)
             resultat = []
             for j in range(len(resultat3)):
                 resultat.append((resultat3[j][0] / nombre(x)[1][j][0] * 100,))
-            temp_df3 = pd.DataFrame(resultat, columns=[f"pourcentage {i} pass"])#pourcentage par rapport a chaque critere de linces
-            temp_df1 = pd.concat([temp_df1, temp_df3], axis=1)
+            temp_df6 = pd.DataFrame(resultat, columns=[f"pourcentage {i} pass"])#pourcentage par rapport a chaque critere de linces
+            temp_df7 = pd.concat([temp_df7, temp_df6], axis=1)
 
-        return result_df, temp_df1
+        return result_df, temp_df7
 
 def concat_nombre(a):#nom/nombre de pass/nombre parmi total/pourcentage par rapport totale
     x=nom(a)[0]
@@ -130,10 +130,24 @@ def intervalle_date(df):#donner intervalle de date min et max
     y=cursor.fetchall()
     y[0]=date(*y[0])#x et y doivent etre liste de date 
     return [x,y]
+
+        
+#programme principale 
+
+if excel_file is not  None:
+    df = pd.read_excel(excel_file)
+    conn = sqlite3.connect(':memory:')
+    # Enregistrement du DataFrame dans la table 'a' de la base de données
+    df.to_sql('a', conn, if_exists='replace')
+    cursor = conn.cursor()
+    [x,y]=intervalle_date(df)
     
-def generale(df):
+    options = ['Generale ', 'Intervalle de jour ', 'jour']
+    selected_options = st.radio('Choisissez la méthode d étude', options)
+    if selected_options==options[0]:
         nombre_ligne = len(df)
         st.write('Linses Classification by Passes')
+        print(df)
         result_df=pd.DataFrame()
         for i in [1,2,3]:
             query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
@@ -152,22 +166,9 @@ def generale(df):
             xaxis_title='Pass Number',  # Nom de l'axe des abscisses
             yaxis_title='Quantity'
         )
-        return 0
-        
-#programme principale 
-
-if excel_file is not  None:
-    df = pd.read_excel(excel_file)
-    conn = sqlite3.connect(':memory:')
-    # Enregistrement du DataFrame dans la table 'a' de la base de données
-    df.to_sql('a', conn, if_exists='replace')
-    cursor = conn.cursor()
-    [x,y]=intervalle_date(df)
-    
-    options = ['Generale ', 'Intervalle de jour ', 'jour']
-    selected_options = st.radio('Choisissez la méthode d étude', options)
-    if selected_options==options[0]:
-        generale(df)
+        pie_char=px.pie(result_df,title='Distribution of  Total Quantity',values=[result_df.loc[0][1],result_df.loc[0][3],result_df.loc[0][5]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
+        st.plotly_chart(bar_chart)
+        st.plotly_chart(pie_char)
 
     if selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
@@ -176,7 +177,7 @@ if excel_file is not  None:
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
-        generale(df)
+        nombre_ligne = len(df)
     elif selected_options==options[2]:
         jour= st.date_input('selectionnez une date :',value=x[0], min_value=x[0],max_value=y[0])
         df=datem(jour,df)
@@ -184,7 +185,7 @@ if excel_file is not  None:
         # Enregistrement du DataFrame dans la table 'a' de la base de données
         df.to_sql('a', conn, if_exists='replace')
         cursor = conn.cursor()
-        generale(df)
+        nombre_ligne = len(df)
         
     with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
             # Write 'result_df' to 'indice pass' sheet
