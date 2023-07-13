@@ -130,24 +130,9 @@ def intervalle_date(df):#donner intervalle de date min et max
     y=cursor.fetchall()
     y[0]=date(*y[0])#x et y doivent etre liste de date 
     return [x,y]
-
-        
-#programme principale 
-
-if excel_file is not  None:
-    df = pd.read_excel(excel_file)
-    conn = sqlite3.connect(':memory:')
-    # Enregistrement du DataFrame dans la table 'a' de la base de données
-    df.to_sql('a', conn, if_exists='replace')
-    cursor = conn.cursor()
-    [x,y]=intervalle_date(df)
-    
-    options = ['Generale ', 'Intervalle de jour ', 'jour']
-    selected_options = st.radio('Choisissez la méthode d étude', options)
-    if selected_options==options[0]:
+def genrale(df):
         nombre_ligne = len(df)
         st.write('Linses Classification by Passes')
-        print(df)
         result_df=pd.DataFrame()
         for i in [1,2,3]:
             query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
@@ -169,6 +154,21 @@ if excel_file is not  None:
         pie_char=px.pie(result_df,title='Distribution of  Total Quantity',values=[result_df.loc[0][1],result_df.loc[0][3],result_df.loc[0][5]],names=['pourcentage 1 pass' ,'pourcentage 2 pass ','pourcentage 3 pass'])
         st.plotly_chart(bar_chart)
         st.plotly_chart(pie_char)
+        return(0)
+#programme principale 
+
+if excel_file is not  None:
+    df = pd.read_excel(excel_file)
+    conn = sqlite3.connect(':memory:')
+    # Enregistrement du DataFrame dans la table 'a' de la base de données
+    df.to_sql('a', conn, if_exists='replace')
+    cursor = conn.cursor()
+    [x,y]=intervalle_date(df)
+    
+    options = ['Generale ', 'Intervalle de jour ', 'jour']
+    selected_options = st.radio('Choisissez la méthode d étude', options)
+    if selected_options==options[0]:
+        generale(df)
 
     if selected_options==options[1]:
         intervalle = st.date_input('selectionnez l intervalle de date :',[x[0],y[0]], min_value=x[0],max_value=y[0])
