@@ -147,7 +147,6 @@ if excel_file is not  None:
     if selected_options==options[0]:
         nombre_ligne = len(df)
         st.write('Linses Classification by Passes')
-        print(df)
         result_df=pd.DataFrame()
         for i in [1,2,3]:
             query=f'SELECT COUNT(*)FROM a WHERE QTE={i}'
