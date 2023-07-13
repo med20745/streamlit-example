@@ -10,8 +10,8 @@ st.title('RESYS Dashboard')#titre taille 1
 excel_file = st.file_uploader("Importez un fichier Excel", type=["xlsx"])
 
 def nom(x):#LIBINDFAM nom des indices 
-    query1=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
-    cursor.execute(query1)
+    query=f'SELECT DISTINCT {x} FROM a ORDER BY {x} ASC'#selection des indices de refraction 
+    cursor.execute(query)
     resultat=cursor.fetchall()
     temp_df= pd.DataFrame(resultat, columns=[x])
     return (temp_df,resultat)
@@ -32,21 +32,21 @@ def pourcentage_total(resultat): #f(nombre(,)[1])%total
 
 def nombre_pass(x):
         result_df = pd.DataFrame()
-        temp_df7 = pd.DataFrame()
+        temp_df1 = pd.DataFrame()
 
         for i in [1, 2, 3]:#nombre de linces de chaque pass 
             query = f"SELECT COUNT(b.{x})FROM(SELECT distinct {x} FROM a) AS c LEFT JOIN a AS b ON b.{x}=c.{x} AND b.QTE={i} GROUP BY c.{x} ORDER BY c.{x} "
             cursor.execute(query)
             resultat3 = cursor.fetchall()
-            temp_df5 = pd.DataFrame(resultat3, columns=[f" {i} pass"])
-            result_df = pd.concat([result_df, temp_df5], axis=1)
+            temp_df2 = pd.DataFrame(resultat3, columns=[f" {i} pass"])
+            result_df = pd.concat([result_df, temp_df2], axis=1)
             resultat = []
             for j in range(len(resultat3)):
                 resultat.append((resultat3[j][0] / nombre(x)[1][j][0] * 100,))
-            temp_df6 = pd.DataFrame(resultat, columns=[f"pourcentage {i} pass"])#pourcentage par rapport a chaque critere de linces
-            temp_df7 = pd.concat([temp_df7, temp_df6], axis=1)
+            temp_df3 = pd.DataFrame(resultat, columns=[f"pourcentage {i} pass"])#pourcentage par rapport a chaque critere de linces
+            temp_df1 = pd.concat([temp_df1, temp_df3], axis=1)
 
-        return result_df, temp_df7
+        return result_df, temp_df1
 
 def concat_nombre(a):#nom/nombre de pass/nombre parmi total/pourcentage par rapport totale
     x=nom(a)[0]
