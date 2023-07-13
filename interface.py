@@ -130,7 +130,7 @@ def intervalle_date(df):#donner intervalle de date min et max
     y=cursor.fetchall()
     y[0]=date(*y[0])#x et y doivent etre liste de date 
     return [x,y]
-def genrale(df):
+def generale(df):
         nombre_ligne = len(df)
         st.write('Linses Classification by Passes')
         result_df=pd.DataFrame()
