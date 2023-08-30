@@ -186,13 +186,13 @@ if excel_file is not  None:
         
     with pd.ExcelWriter('result.xlsx', engine='openpyxl') as writer:
             # Write 'result_df' to 'indice pass' sheet
-        concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='index1', index=False)
+        concat_nombre('LIBINDFAM').to_excel(writer, sheet_name='indice1', index=False)
         
             # Write 'result_df1' to 'indice pourcentage' sheet
-        concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='index2', index=False)
+        concat_pourcentage('LIBINDFAM ').to_excel(writer, sheet_name='indice2', index=False)
             
-        concat_nombre('TYPORD').to_excel(writer, sheet_name='order1', index=False)
-        concat_pourcentage('TYPORD').to_excel(writer, sheet_name='order2', index=False)
+        concat_nombre('TYPORD').to_excel(writer, sheet_name='ordre1', index=False)
+        concat_pourcentage('TYPORD').to_excel(writer, sheet_name='ordre2', index=False)
             
         concat_nombre('LIBTEIFAM').to_excel(writer, sheet_name='type1', index=False)
         concat_pourcentage('LIBTEIFAM').to_excel(writer, sheet_name='type2', index=False)
